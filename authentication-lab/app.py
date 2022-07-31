@@ -15,10 +15,11 @@ Config = {
   "messagingSenderId": "522523454877",
   "appId": "1:522523454877:web:04ad1af07ce78ff2969374",
   "measurementId": "G-KL0299R963",
-  "databaseURL":""
+  "databaseURL":"https://fir-1-96645-default-rtdb.europe-west1.firebasedatabase.app/"
 }
 firebase=pyrebase.initialize_app(Config)
 auth = firebase.auth()
+db=firebase.database()
 #Initialize Firebase
 
 
@@ -26,12 +27,17 @@ auth = firebase.auth()
 def signup():
    error = ""
    if request.method == 'POST':
-       email = request.form['email']
-       password = request.form['password']
-       try:
-           login_session['user'] = auth.create_user_with_email_and_password(email, password)
-           return redirect(url_for('signin'))
-       except:
+        email = request.form['email']
+        password = request.form['password']
+        name = request.form['username']
+        firstname = request.form['firstname']
+        try:
+            login_session['user'] = auth.create_user_with_email_and_password(email, password)
+            user = {"name": name, "email": email,"password":password,"firstname":firstname}
+            db.child("Users").child(login_session['user']
+            ['localId']).set(user)
+            return redirect(url_for('signin'))
+        except:
            error = "Authentication failed"
    return render_template("signup.html")
 
@@ -52,6 +58,12 @@ def signin():
 
 @app.route('/add_tweet', methods=['GET', 'POST'])
 def add_tweet():
+    if request.method == 'POST':
+       try:
+           article = {"name": request.form['title'],"content": request.form['text']}
+           db.child("Articles").push(article)
+       except:
+           print("Couldn't add article")
     return render_template("add_tweet.html")
 
 @app.route('/sign_out', methods=['GET', 'POST'])
