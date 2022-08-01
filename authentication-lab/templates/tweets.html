@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+	{%for k in tweets2 %}
+	<h1>{{tweets2[k]["title"]}}</h1>
+	<p>{{tweets2[k]["text"]}}</p>	
+	<h4>{{tweets2[k]["likes"]}}</h4>
+
+	<h5>{{tweets2[k]["time"]}}</h5>
+	<form method="POST" action="/like/{{k}}">
+	           <div>
+            <input type="submit"/>
+        </div>
+    </form>
+
+	{%endfor%}
+
+</head>
+<body>
+
+</body>
+</html>
